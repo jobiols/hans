@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="account_payment_cheque_fecha_payment">
+        <field name="name">Control de Cheques</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+
+           <xpath expr="//field[@name='payment_date']" position="after">
+                    <field name="fecha_vencimiento"   attrs="{'invisible':[('journal_id','!=', 9 )],'readonly':[('state','!=','draft')], 'required':[('journal_id','=', 9)]}"   />                   
+                     <field name="destinatario"   attrs="{'invisible':[('journal_id','!=', 9 )], 'readonly':[('estados','=','tercero')]  }"   /> 
+            </xpath>
+
+
+            <xpath expr="//field[@name='id']" position="after">
+          
+                 <div attrs="{'invisible':['|',('journal_id', '!=', 9), ('state', 'in', ('draft'))]}">
+                <button name="estados_cobrado"   attrs="{'invisible': [('estados', 'not in', ('recibido','devuelto'))]}" type="object" string="Cobrado" class="btn-success"/>    
+                <button name="estados_tercero"   attrs="{'invisible': [('estados', 'not in', ('recibido','devuelto'))]}" type="object" string="Entregado a tercero" class="btn-info"/>
+                <button name="estados_rechazado" attrs="{'invisible': [('estados', 'not in', ('recibido','devuelto'))]}" type="object" string="Rechazado" class="btn-danger"/>    
+                <button name="estados_devuelto" attrs="{'invisible': [('estados', '!=', 'tercero' )]}" type="object" string="Devuelto" class="btn-warning"/>    
+                </div>
+           
+            </xpath>
+
+             <xpath expr="//button[@name='action_draft']" position="after">            
+                
+                <field name="estados"  attrs="{'invisible':['|',('journal_id', '!=', 9), ('state', 'in', ('draft'))]}"  widget="statusbar" statusbar_visible="recibido,cobrado,tercero,rechazado,devuelto"/>
+               
+            </xpath>
+          
+        </field>
+
+    </record>
+
+
+    <record model="ir.ui.view" id="account_payment_cheque_fecha_invoice">
+        <field name="name">Control de Cheques</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+        <field name="arch" type="xml">
+           
+            <xpath expr="//field[@name='payment_date']" position="after">
+                    <field name="fecha_vencimiento"  attrs="{'invisible':[('journal_id','!=', 9 )],'readonly':[('state','!=','draft')], 'required':[('journal_id','=', 9)]}" />
+                    <field name="destinatario"   attrs="{'invisible':[('journal_id','!=', 9 )] }"   /> 
+            </xpath>
+          
+        </field>
+
+    </record>
+
+    
+    <record model="ir.ui.view" id="account_payment_cheque_fecha_vista">
+        <field name="name">Control de Cheques</field>
+        <field name="model">account.payment</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="fecha_vencimiento &lt; current_date" decoration-warning="fecha_vencimiento_tres_dias &lt; current_date" decoration-primary ="fecha_vencimiento_ocho_dias &lt; current_date" decoration-bf="fecha_vencimiento_ocho_dias &lt; current_date"  default_order="fecha_vencimiento asc" >
+                    <field name="payment_date"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="payment_method_id"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="amount" sum="Amount"/>
+                    <field name="fecha_vencimiento" />
+                    <field name="fecha_vencimiento_tres_dias" invisible="1"/> 
+                    <field name="fecha_vencimiento_ocho_dias" invisible="1"/> 
+                    <field name="estados"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="partner_type" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="payment_cheque_fecha">
+                <field name="name">Control de cheques</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="view_id" ref="account_payment_cheque_fecha_vista"/>
+                <field name="domain">[("journal_id","ilike","Cheque"), ("estados","=","recibido")]</field>
+                <field name="res_model">account.payment</field>
+                <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <record model="ir.ui.view" id="account_payment_cheque_fecha_historial">
+        <field name="name">Historial de Cheques</field>
+        <field name="model">account.payment</field>
+        <field name="arch" type="xml">
+            <tree  default_order="fecha_vencimiento asc" >
+                    <field name="payment_date"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="payment_method_id"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="amount" sum="Amount"/>
+                    <field name="fecha_vencimiento" />
+                    <field name="fecha_vencimiento_tres_dias" invisible="1"/> 
+                    <field name="fecha_vencimiento_ocho_dias" invisible="1"/> 
+                    <field name="estados"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="partner_type" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="payment_cheque_fecha_historial">
+                <field name="name">Historial de cheques</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="view_id" ref="account_payment_cheque_fecha_historial"/>
+                <field name="domain">[("journal_id","ilike","Cheque"), ("estados","!=","recibido")]</field>
+                <field name="res_model">account.payment</field>
+                <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <menuitem id="payment_cheque_por_revisar" name="Control de Cheques" sequence ="10" parent="account.menu_finance_receivables_documents" action ="payment_cheque_fecha" />
+    <menuitem id="payment_cheque_por_revisar_historial" name="Historial de Cheques" sequence ="11" parent="account.menu_finance_receivables_documents" action ="payment_cheque_fecha_historial" />
+
+
+
+</odoo>

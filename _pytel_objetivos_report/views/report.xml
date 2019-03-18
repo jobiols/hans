@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_comisiones_form" model="ir.ui.view">
+        <field name="name">Formulario de Comisiones</field>
+        <field name="model">reporte.comisiones</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Declaraciones Mensuales">
+                <field name="invoice_report_printed" invisible="1"/>
+                <group attrs="{'invisible':[('invoice_report_printed','=',True)]}">
+                    <group>
+                        <field name="from_date" required="1" style="width:200px;"/>
+                        <field name="to_date" required="1" style="width:200px;"/>
+                    </group>
+                </group>
+                <group attrs="{'invisible':[('invoice_report_printed','=',False)]}">
+                    <field name="file_name" invisible="1"/>
+                    <field name="invoice_summary_file" readonly="1"  filename="file_name"/>
+                </group>
+                <footer>
+                    <button string='Generar'  name="action_print_comision_summary" type="object" class="btn-primary" attrs="{'invisible':[('invoice_report_printed','=',True)]}"/>
+                    <button string="Cerrar" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_comisiones" model="ir.actions.act_window">
+        <field name="name">Comisiones Empleados</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">reporte.comisiones</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem  id="menu_print_action_comisiones" name="Comisiones de Empleados" action="action_comisiones" sequence="228" parent="account.menu_finance_legal_statement" groups="base.group_erp_manager"/>
+</odoo>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pytel_comision_product_form" model="ir.ui.view">
+        <field name="name">Comisión</field>
+        <field name="model">product.template</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <header>
+                <button name="hola" string="Actualizar"  attrs="{'invisible': [('porcentaje_line_id','!=',False)]}" type="object" class="oe_read_only btn-info" 
+                    icon="fa-arrow-right" />
+            </header>
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page string="Comisiones" name="Comisiones" groups="account.group_account_user" >
+                    <field name="porcentaje_line_id" mode="tree">
+                        <tree string="Lineas de Porcentaje" editable="bottom">
+                            <field name="porcentaje_id"/>
+                            <field name="monto"/>
+                        </tree>
+                        <form string="Lineas de Porcentaje">
+                            <group>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="product_id"/>      
+                                    <field name="porcentaje_id"/>      
+                                    <field name="monto"/>      
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pytel_comision_porcentaje_form" model="ir.ui.view">
+        <field name="name">Comision</field>
+        <field name="model">gestion.porcentaje</field>
+        <field name="arch" type="xml">
+            <tree string="Comisiones" editable="bottom">
+                <field name="name"/>
+                <field name="porcentaje"/>
+            </tree>      
+        </field>
+    </record>
+    <record id="action_comision_porcentaje_line" model="ir.actions.act_window">
+        <field name="name">Comision</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">gestion.porcentaje</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem  id="menu_comision_porcentaje" name="Comisiones" action="action_comision_porcentaje_line" sequence="229" parent="account.account_management_menu"  groups="account.group_account_user" />
+</odoo>

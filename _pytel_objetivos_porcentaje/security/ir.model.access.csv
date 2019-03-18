@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acess_gestion_porcentaje_group_user,gestion.porcentaje.user,model_gestion_porcentaje,base.group_user,1,1,1,1
+
+acess_product_porcentaje_line_group_user,product.porcentaje.line.user,model_product_porcentaje_line,base.group_user,1,1,1,1
